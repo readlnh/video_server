@@ -16,8 +16,8 @@ type VideoInfo struct {
 
 // Comment
 type Comment struct {
-	Id       string
-	VideoId  string
-	AuthorId int
-	Content  string
+	Id         string
+	VideoId    string
+	AuthorName string
+	Content    string
 }
