@@ -2,13 +2,17 @@ package dbops
 
 import (
 	"fmt"
+	"strconv"
 	"testing"
+	"time"
 )
 
 var tempvid string
 
 func clearTables() {
 	dbConn.Exec("truncate users")
+	dbConn.Exec("truncate video_info")
+	dbConn.Exec("truncate comments")
 }
 
 func TestMain(m *testing.M) {
@@ -92,5 +96,39 @@ func testRegetVideoInfo(t *testing.T) {
 	_, err := GetVideoInfo(tempvid)
 	if err != nil {
 		t.Errorf("Error of RegetVideo: %v", err)
+	}
+}
+
+func TestCommentsWorkFlow(t *testing.T) {
+	clearTables()
+	t.Run("AddUser", testAddUser)
+	t.Run("AddNewComments", testAddNewComments)
+	t.Run("ListComments", testListComments)
+}
+
+func testAddNewComments(t *testing.T) {
+	err := AddNewComments("12345", 1, "Hello Video!!!")
+
+	if err != nil {
+		t.Errorf("Failed to add video: %v\n", err)
+	}
+}
+
+func testListComments(t *testing.T) {
+	vid := "12345"
+	from := 1514764800
+	to, _ := strconv.Atoi(strconv.FormatInt(time.Now().UnixNano()/1000000000, 10))
+	comments, err := ListComments(vid, from, to)
+
+	if err != nil {
+		t.Errorf("Error of ListComments: %v\n", err)
+	}
+
+	fmt.Printf("dsjfkjkldf")
+
+	fmt.Println(len(comments))
+
+	for i, comment := range comments {
+		fmt.Printf("comment: %d, %v \n", i, comment)
 	}
 }
